@@ -1,3 +1,8 @@
+@font-face {
+	font-family: "Pixeled";
+	src: url("fonts/Pixeled.ttf");
+}
+
 body {
     text-align: center;
 }
@@ -17,15 +22,23 @@ body {
     transform: translate(-50%, -50%);
 }
 
+.container {
+	width: 100%;
+	margin-top: -3%;
+    display: flex;
+    justify-content: center;
+}	
+
 .modal-body {
-    font-size: 1.5em;
-    margin-top: -4%;
+	font-family: "Pixeled";
+	color: white;
+    font-size: 1.8em;
+    padding-right: 8%;
 }
 
 .icon-svg {
     display: block;
-    width: 80%;
-    height: 80%;
+    width: 9%;
 }
 
 .replay {
