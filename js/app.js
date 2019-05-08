@@ -39,7 +39,7 @@ Player.prototype.update = function(dt) {
     this.handleCollision();
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
@@ -49,6 +49,9 @@ Player.prototype.handleCollision = function(key) {
         if(enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)){
             this.resetPosition();
         }
+    }
+    if(collectible.y === this.y && collectible.x === this.x){
+        console.log("collected: " + collectible.value);
     }
 }
 
@@ -91,6 +94,20 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+// Enemies our player must avoid
+var Collectible = function() {
+    this.x = 300;
+    this.y = 220;
+    this.value = 500;
+    this.sprite = 'images/Star.png';
+};
+
+// Draw the enemy on the screen, required method for game
+Collectible.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
@@ -110,9 +127,6 @@ document.getElementById("play-again").addEventListener('click', function(e){
     document.getElementById("victory-modal").style.display = "none";
 });
 
-let allEnemies = [];
-let player = new Player();
-
 function createEnemies(){
     allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
                   new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600),
@@ -121,4 +135,15 @@ function createEnemies(){
                   new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600)];
 }
 
+function createCollectible(delay = 0){
+    setTimeout(function(){
+        collectible = new Collectible();
+    }, delay);
+}
+
+let allEnemies = [];
+let collectible;
+let player = new Player();
+
+createCollectible();
 createEnemies();
