@@ -1,8 +1,8 @@
 // Enemies our player must avoid
-var Enemy = function() {
-    this.x = 0;
-    this.y = 150;
-    this.speed = 600;
+var Enemy = function(y = 150, speed = 400) {
+    this.x = -200;
+    this.y = y;
+    this.speed = speed;
     this.road = [50, 150, 220];
     this.sprite = 'images/enemy-bug.png';
 };
@@ -31,6 +31,7 @@ var Player = function() {
     this.x = 200;
     this.y = 400;
     this.road = [50, 150, 220, 300, 400];
+    this.allowMove = true;
     this.sprite = 'images/char-boy.png';
 };
 
@@ -46,49 +47,49 @@ Player.prototype.render = function() {
 Player.prototype.handleCollision = function(key) {
     for(enemy of allEnemies){
         if(enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)){
-            this.x = 200;
-            this.y = 400;
+            this.resetPosition();
         }
     }
 }
 
+Player.prototype.resetPosition = function(key) {
+    this.x = 200;
+    this.y = 400;
+}
+
 Player.prototype.handleInput = function(key) {
-    if(key === 'left' && this.x > 0){
-        this.x -= 100;
-    } else if(key === 'right' && this.x < 400){
-        this.x += 100;
-    } else if(key === 'up' && this.y > this.road[0]){
-        let index = 1;
-        let found = false;
-        while(index < this.road.length && !found){
-            if(this.y === this.road[index]){
-                this.y = this.road[index-1];
-                found = true;
+    if(this.allowMove){
+        if(key === 'left' && this.x > 0){
+            this.x -= 100;
+        } else if(key === 'right' && this.x < 400){
+            this.x += 100;
+        } else if(key === 'up' && this.y > this.road[0]){
+            let index = 1;
+            let found = false;
+            while(index < this.road.length && !found){
+                if(this.y === this.road[index]){
+                    this.y = this.road[index-1];
+                    found = true;
+                }
+                index++;
             }
-            index++;
-        }
-    } else if(key === 'down' && this.y < 400){
-        let index = 0;
-        let found = false;
-        while(index < this.road.length && !found){
-            if(this.y === this.road[index]){
-                this.y = this.road[index+1];
-                found = true;
+        } else if(key === 'down' && this.y < 400){
+            let index = 0;
+            let found = false;
+            while(index < this.road.length && !found){
+                if(this.y === this.road[index]){
+                    this.y = this.road[index+1];
+                    found = true;
+                }
+                index++;
             }
-            index++;
+        } else if(key === 'up' && this.y === this.road[0]){
+            this.resetPosition();
+            this.allowMove = false;
+            document.getElementById("victory-modal").style.display = "block";
         }
-    } else if(key === 'up' && this.y === this.road[0]){
-        console.log("victory");
     }
 };
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
-let allEnemies = [new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy(), new Enemy()];
-//let allEnemies = [new Enemy()];
-let player = new Player();
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -103,4 +104,21 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-//document.getElementById("victory-modal").style.display = "block";
+document.getElementById("play-again").addEventListener('click', function(e){
+    player.allowMove = true;
+    createEnemies();
+    document.getElementById("victory-modal").style.display = "none";
+});
+
+let allEnemies = [];
+let player = new Player();
+
+function createEnemies(){
+    allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(220, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600)];
+}
+
+createEnemies();
