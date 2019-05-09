@@ -32,6 +32,7 @@ var Player = function() {
     this.y = 400;
     this.road = [50, 150, 220, 300, 400];
     this.allowMove = true;
+    this.score = 0;
     this.sprite = 'images/char-boy.png';
 };
 
@@ -51,7 +52,14 @@ Player.prototype.handleCollision = function(key) {
         }
     }
     if(collectible.y === this.y && collectible.x === this.x){
-        console.log("collected: " + collectible.value);
+        if(collectible.allowCollect){
+            collectible.allowCollect = false;
+            this.score += collectible.value;
+            document.getElementById("score").innerText = this.score;
+            if(bestScore < this.score)
+                bestScore = this.score;
+            createCollectible(1000);
+        }
     }
 }
 
@@ -95,16 +103,18 @@ Player.prototype.handleInput = function(key) {
 };
 
 // Enemies our player must avoid
-var Collectible = function() {
-    this.x = 300;
-    this.y = 220;
-    this.value = 500;
+var Collectible = function(x = 300, y = 220) {
+    this.x = x;
+    this.y = y;
+    this.value = 10;
+    this.allowCollect = true;
     this.sprite = 'images/Star.png';
 };
 
 // Draw the enemy on the screen, required method for game
 Collectible.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    if(this.allowCollect)
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 
@@ -137,10 +147,14 @@ function createEnemies(){
 
 function createCollectible(delay = 0){
     setTimeout(function(){
-        collectible = new Collectible();
+        let roadY = [50, 150, 220];
+        let roadX = [0, 100, 200, 300, 400];
+        collectible = new Collectible(roadX[Math.floor(Math.random() * roadX.length)], roadY[Math.floor(Math.random() * roadY.length)]);
+        collectible.allowCollect = true;
     }, delay);
 }
 
+let bestScore = 0;
 let allEnemies = [];
 let collectible;
 let player = new Player();
