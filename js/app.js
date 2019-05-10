@@ -3,7 +3,7 @@ var Enemy = function(y = 150, speed = 400) {
     this.x = -200;
     this.y = y;
     this.speed = speed;
-    this.road = [50, 150, 220];
+    this.road = [50, 150, 300, 400];
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -29,11 +29,11 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function() {
     this.x = 200;
-    this.y = 400;
+    this.y = 500;
     this.score = 0;
     this.bestScore = 0;
     this.allowMove = true;
-    this.road = [50, 150, 220, 300, 400];
+    this.road = [50, 150, 220, 300, 400, 500];
     this.sprite = 'images/char-boy.png';
 };
 
@@ -65,44 +65,65 @@ Player.prototype.handleCollision = function(key) {
             this.score += collectible.value;
             if(this.bestScore < this.score)
                 this.bestScore = this.score;
-            createCollectible(1000);
+            createCollectible(1500);
         }
     }
 }
 
 Player.prototype.resetPosition = function(key) {
     this.x = 200;
-    this.y = 400;
+    this.y = 500;
+}
+
+Player.prototype.positionAvailable = function(nextX, nextY) {
+    let available = true;
+    for(rock of allRocks){
+        if(rock.x === nextX && rock.y === nextY)
+            available = false;
+    }
+    return available;
 }
 
 Player.prototype.handleInput = function(key) {
     if(this.allowMove){
         let moved = false;
         if(key === 'left' && this.x > 0){
-            this.x -= 100;
-            moved = true;
+            let nextX = this.x - 100;
+            if(this.positionAvailable(nextX, this.y)){
+                this.x -= 100;
+                moved = true;
+            }
         } else if(key === 'right' && this.x < 400){
-            this.x += 100;
-            moved = true;
+            let nextX = this.x + 100;
+            if(this.positionAvailable(nextX, this.y)){
+                this.x += 100;
+                moved = true;
+            }
         } else if(key === 'up' && this.y > this.road[0]){
             let index = 1;
             let found = false;
             while(index < this.road.length && !found){
                 if(this.y === this.road[index]){
-                    this.y = this.road[index-1];
-                    moved = true;
-                    found = true;
+                    let nextY = this.road[index-1];
+                    if(this.positionAvailable(this.x, nextY)){
+                        this.y = this.road[index-1];
+                        moved = true;
+                        found = true;
+                    }
                 }
                 index++;
             }
-        } else if(key === 'down' && this.y < 400){
+        } else if(key === 'down' && this.y < this.road[this.road.length-1]){
             let index = 0;
             let found = false;
             while(index < this.road.length && !found){
                 if(this.y === this.road[index]){
-                    this.y = this.road[index+1];
-                    moved = true;
-                    found = true;
+                    let nextY = this.road[index+1];
+                    if(this.positionAvailable(this.x, nextY)){
+                        this.y = this.road[index+1];
+                        moved = true;
+                        found = true;
+                    }
                 }
                 index++;
             }
@@ -112,21 +133,18 @@ Player.prototype.handleInput = function(key) {
             this.allowMove = false;
             document.getElementById("victory-modal").style.display = "block";
         }
-        if(moved && this.y <= 220){
+        if(moved && this.y <= 400){
             this.score += 1;
             if(this.bestScore < this.score)
                 this.bestScore = this.score;
-        }
-        else if (moved && this.score > 0 && this.y > 220){
+        } else if (moved && this.score > 0 && this.y > 400){
             this.score -= 2;
-            if(this.bestScore < this.score)
-                this.bestScore = this.score;
         }
     }
 };
 
-// Enemies our player must avoid
-var Collectible = function(x = 300, y = 220) {
+// Collectible that our player must get to increase her score
+var Collectible = function(x, y) {
     this.x = x;
     this.y = y;
     this.value = 3;
@@ -138,6 +156,18 @@ var Collectible = function(x = 300, y = 220) {
 Collectible.prototype.render = function() {
     if(this.allowCollect)
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// Rocks that block the road
+var Rock = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.sprite = 'images/Rock.png';
+};
+
+// Draw the enemy on the screen, required method for game
+Rock.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 
@@ -158,32 +188,70 @@ document.getElementById("play-again").addEventListener('click', function(e){
     player.score = 0;
     player.allowMove = true;
     createEnemies();
+    createRocks();
+    createCollectible();
     document.getElementById("victory-modal").style.display = "none";
     startTimer();
 });
 
+function createRocks(){
+    let roadX = [0, 100, 200, 300, 400];
+    let index = Math.floor(Math.random() * roadX.length);
+    let firstX = roadX[index];
+    roadX.splice(index,1);
+    index = Math.floor(Math.random() * roadX.length);
+    let secondX = roadX[index];
+    roadX.splice(index,1);
+    index = Math.floor(Math.random() * roadX.length);
+    let thirdX = roadX[index];
+    allRocks = [new Rock(firstX, 220),
+                new Rock(secondX, 220),
+                new Rock(thirdX, 220)];
+}
+
 function createEnemies(){
     allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
                   new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(220, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600),
                   new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600)];
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600),
+                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600)];
 }
 
 function createCollectible(delay = 0){
     setTimeout(function(){
-        let roadY = [50, 150, 220];
+        let roadY = [50, 150, 220, 300, 400];
         let roadX = [0, 100, 200, 300, 400];
-        collectible = new Collectible(roadX[Math.floor(Math.random() * roadX.length)], roadY[Math.floor(Math.random() * roadY.length)]);
+        let yPosition = roadY[Math.floor(Math.random() * roadY.length)];
+        let xPosition;
+        if(yPosition === 220){
+            let repeat = true;
+            while(repeat){
+                xPosition = roadX[Math.floor(Math.random() * roadX.length)];
+                let available = true;
+                for(rock of allRocks){
+                    if(rock.x === xPosition)
+                        available = false;
+                }
+                if(available)
+                    repeat = false;
+            }
+        } else {
+            xPosition = roadX[Math.floor(Math.random() * roadX.length)];
+        }
+        collectible = new Collectible(xPosition, yPosition);
         collectible.allowCollect = true;
     }, delay);
 }
 
 let collectible;
 let timer;
+let allRocks = [];
 let allEnemies = [];
 let player = new Player();
 
 createCollectible();
+createRocks();
 createEnemies();
 startTimer();
