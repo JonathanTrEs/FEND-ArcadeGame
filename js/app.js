@@ -48,6 +48,7 @@ Player.prototype.render = function() {
     ctx.fillText(this.score, 10, 90);
     ctx.font = "10px Pixeled";
     ctx.fillText("Best " + this.bestScore, 10, 110);
+    ctx.fillText(timer, 430, 80);
 };
 
 Player.prototype.handleCollision = function(key) {
@@ -55,6 +56,7 @@ Player.prototype.handleCollision = function(key) {
         if(enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)){
             this.score = 0;
             this.resetPosition();
+            startTimer();
         }
     }
     if(collectible.y === this.y && collectible.x === this.x){
@@ -105,14 +107,21 @@ Player.prototype.handleInput = function(key) {
                 index++;
             }
         } else if(key === 'up' && this.y === this.road[0]){
+            stopTimer();
             this.resetPosition();
             this.allowMove = false;
             document.getElementById("victory-modal").style.display = "block";
         }
-        if(moved && this.y <= 220)
+        if(moved && this.y <= 220){
             this.score += 1;
-        else if (moved && this.score > 0 && this.y > 220)
+            if(this.bestScore < this.score)
+                this.bestScore = this.score;
+        }
+        else if (moved && this.score > 0 && this.y > 220){
             this.score -= 2;
+            if(this.bestScore < this.score)
+                this.bestScore = this.score;
+        }
     }
 };
 
@@ -150,6 +159,7 @@ document.getElementById("play-again").addEventListener('click', function(e){
     player.allowMove = true;
     createEnemies();
     document.getElementById("victory-modal").style.display = "none";
+    startTimer();
 });
 
 function createEnemies(){
@@ -169,9 +179,11 @@ function createCollectible(delay = 0){
     }, delay);
 }
 
-let allEnemies = [];
 let collectible;
+let timer;
+let allEnemies = [];
 let player = new Player();
 
 createCollectible();
 createEnemies();
+startTimer();
