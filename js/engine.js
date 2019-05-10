@@ -183,4 +183,5 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+    ctx.fillStyle = "#ffffff";
 })(this);

@@ -43,6 +43,10 @@ Player.prototype.update = function(dt) {
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.font = "20px Pixeled";
+    ctx.fillText(this.score, 10, 90);
+    ctx.font = "10px Pixeled";
+    ctx.fillText("Best " + bestScore, 10, 110);
 };
 
 Player.prototype.handleCollision = function(key) {
@@ -55,7 +59,6 @@ Player.prototype.handleCollision = function(key) {
         if(collectible.allowCollect){
             collectible.allowCollect = false;
             this.score += collectible.value;
-            document.getElementById("score").innerText = this.score;
             if(bestScore < this.score)
                 bestScore = this.score;
             createCollectible(1000);
@@ -106,7 +109,7 @@ Player.prototype.handleInput = function(key) {
 var Collectible = function(x = 300, y = 220) {
     this.x = x;
     this.y = y;
-    this.value = 10;
+    this.value = 3;
     this.allowCollect = true;
     this.sprite = 'images/Star.png';
 };
@@ -132,6 +135,7 @@ document.addEventListener('keyup', function(e) {
 });
 
 document.getElementById("play-again").addEventListener('click', function(e){
+    player.score = 0;
     player.allowMove = true;
     createEnemies();
     document.getElementById("victory-modal").style.display = "none";
