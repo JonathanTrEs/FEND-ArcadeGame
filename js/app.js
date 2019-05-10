@@ -30,9 +30,10 @@ Enemy.prototype.render = function() {
 var Player = function() {
     this.x = 200;
     this.y = 400;
-    this.road = [50, 150, 220, 300, 400];
-    this.allowMove = true;
     this.score = 0;
+    this.bestScore = 0;
+    this.allowMove = true;
+    this.road = [50, 150, 220, 300, 400];
     this.sprite = 'images/char-boy.png';
 };
 
@@ -46,12 +47,13 @@ Player.prototype.render = function() {
     ctx.font = "20px Pixeled";
     ctx.fillText(this.score, 10, 90);
     ctx.font = "10px Pixeled";
-    ctx.fillText("Best " + bestScore, 10, 110);
+    ctx.fillText("Best " + this.bestScore, 10, 110);
 };
 
 Player.prototype.handleCollision = function(key) {
     for(enemy of allEnemies){
         if(enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)){
+            this.score = 0;
             this.resetPosition();
         }
     }
@@ -59,8 +61,8 @@ Player.prototype.handleCollision = function(key) {
         if(collectible.allowCollect){
             collectible.allowCollect = false;
             this.score += collectible.value;
-            if(bestScore < this.score)
-                bestScore = this.score;
+            if(this.bestScore < this.score)
+                this.bestScore = this.score;
             createCollectible(1000);
         }
     }
@@ -73,16 +75,20 @@ Player.prototype.resetPosition = function(key) {
 
 Player.prototype.handleInput = function(key) {
     if(this.allowMove){
+        let moved = false;
         if(key === 'left' && this.x > 0){
             this.x -= 100;
+            moved = true;
         } else if(key === 'right' && this.x < 400){
             this.x += 100;
+            moved = true;
         } else if(key === 'up' && this.y > this.road[0]){
             let index = 1;
             let found = false;
             while(index < this.road.length && !found){
                 if(this.y === this.road[index]){
                     this.y = this.road[index-1];
+                    moved = true;
                     found = true;
                 }
                 index++;
@@ -93,6 +99,7 @@ Player.prototype.handleInput = function(key) {
             while(index < this.road.length && !found){
                 if(this.y === this.road[index]){
                     this.y = this.road[index+1];
+                    moved = true;
                     found = true;
                 }
                 index++;
@@ -102,6 +109,10 @@ Player.prototype.handleInput = function(key) {
             this.allowMove = false;
             document.getElementById("victory-modal").style.display = "block";
         }
+        if(moved && this.y <= 220)
+            this.score += 1;
+        else if (moved && this.score > 0 && this.y > 220)
+            this.score -= 2;
     }
 };
 
@@ -158,7 +169,6 @@ function createCollectible(delay = 0){
     }, delay);
 }
 
-let bestScore = 0;
 let allEnemies = [];
 let collectible;
 let player = new Player();
