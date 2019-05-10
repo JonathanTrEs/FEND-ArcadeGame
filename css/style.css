@@ -5,17 +5,45 @@
 
 body {
     text-align: center;
+    background: url(../images/background.svg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+header {
+    font-family: "Pixeled";
+    color: #c84513;
+}
+
+canvas {
+    margin-top: -3em;
+}
+
+button {
+    border: 200px;
+}
+
+button:hover {
+    -webkit-transform: scale(1.10);
+    transform: scale(1.10);
+    cursor: pointer;
+}
+
+button:focus {
+    outline: none;
 }
 
 .modal {
     width: 505px;
     height: 3.5em;
-    background-color: #b63a0c;
+    background-color: #ff9400;;
     box-shadow: 2px 23px 15px 0 rgb(46, 61, 73);
     position: fixed;
     z-index: 1;
     left: 50%;
-    top: 20em;
+    top: 25em;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -49,18 +77,4 @@ body {
 
 #victory-modal {
     display: none;
-}
-
-button {
-	border: 200px;
-}
-
-button:hover {
-  	-webkit-transform: scale(1.10);
-    transform: scale(1.10);
-    cursor: pointer;
-}
-
-button:focus {
-	outline: none;
 }
