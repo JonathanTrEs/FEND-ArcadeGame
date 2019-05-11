@@ -20,11 +20,11 @@ var Enemy = function(y = 150, speed = 400, spriteArray) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    if(this.x < 900){
+    if (this.x < 900) {
         this.x += this.speed * dt;
-        if(this.updateSprite){
+        if (this.updateSprite) {
             this.spriteIndex++;
-            if(this.spriteIndex >= this.spriteArray.length)
+            if (this.spriteIndex >= this.spriteArray.length)
                 this.spriteIndex = 0;
             this.sprite = this.spriteArray[this.spriteIndex];
             this.updateSprite = false;
@@ -61,9 +61,9 @@ var Player = function(spriteArray) {
 };
 
 Player.prototype.update = function(dt) {
-    if(this.updateSprite){
+    if (this.updateSprite) {
         this.spriteIndex++;
-        if(this.spriteIndex >= this.spriteArray.length)
+        if (this.spriteIndex >= this.spriteArray.length)
             this.spriteIndex = 0;
         this.sprite = this.spriteArray[this.spriteIndex];
         this.updateSprite = false;
@@ -74,10 +74,10 @@ Player.prototype.update = function(dt) {
 
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x-20, this.y, 150, 150);
-    for(let i = 0; i < this.lifes; i++){
-        ctx.drawImage(Resources.get(this.heartSprite), this.x-5, this.y+(i*10), 30, 30);
-    }    
+    ctx.drawImage(Resources.get(this.sprite), this.x - 20, this.y, 150, 150);
+    for (let i = 0; i < this.lifes; i++) {
+        ctx.drawImage(Resources.get(this.heartSprite), this.x - 5, this.y + (i * 10), 30, 30);
+    }
     ctx.font = "20px Pixeled";
     ctx.fillText(this.score, 10, 90);
     ctx.font = "10px Pixeled";
@@ -86,18 +86,18 @@ Player.prototype.render = function() {
 };
 
 Player.prototype.handleCollision = function(key) {
-    for(enemy of allEnemies){
-        if(enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)){
+    for (enemy of allEnemies) {
+        if (enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)) {
             this.score = 0;
             this.lifes--;
             this.resetPosition();
         }
     }
-    if(collectible != null && collectible.y === this.y && collectible.x === this.x){
-        if(collectible.allowCollect){
+    if (collectible != null && collectible.y === this.y && collectible.x === this.x) {
+        if (collectible.allowCollect) {
             collectible.allowCollect = false;
             this.score += collectible.value;
-            if(bestScore < this.score)
+            if (bestScore < this.score)
                 bestScore = this.score;
             createCollectible(1500);
         }
@@ -107,73 +107,73 @@ Player.prototype.handleCollision = function(key) {
 Player.prototype.resetPosition = function(key) {
     this.x = 200;
     this.y = 500;
-    if(this.lifes <= 0){
+    if (this.lifes <= 0) {
         showFinishModal("You died!");
     }
 }
 
 Player.prototype.positionAvailable = function(nextX, nextY) {
     let available = true;
-    for(rock of allRocks){
-        if(rock.x === nextX && rock.y === nextY)
+    for (rock of allRocks) {
+        if (rock.x === nextX && rock.y === nextY)
             available = false;
     }
     return available;
 }
 
 Player.prototype.handleInput = function(key) {
-    if(this.allowMove){
+    if (this.allowMove) {
         let moved = false;
-        if(key === 'left' && this.x > 0){
+        if (key === 'left' && this.x > 0) {
             let nextX = this.x - 100;
-            if(this.positionAvailable(nextX, this.y)){
+            if (this.positionAvailable(nextX, this.y)) {
                 this.x -= 100;
                 moved = true;
             }
-        } else if(key === 'right' && this.x < 400){
+        } else if (key === 'right' && this.x < 400) {
             let nextX = this.x + 100;
-            if(this.positionAvailable(nextX, this.y)){
+            if (this.positionAvailable(nextX, this.y)) {
                 this.x += 100;
                 moved = true;
             }
-        } else if(key === 'up' && this.y > this.road[0]){
+        } else if (key === 'up' && this.y > this.road[0]) {
             let index = 1;
             let found = false;
-            while(index < this.road.length && !found){
-                if(this.y === this.road[index]){
-                    let nextY = this.road[index-1];
-                    if(this.positionAvailable(this.x, nextY)){
-                        this.y = this.road[index-1];
+            while (index < this.road.length && !found) {
+                if (this.y === this.road[index]) {
+                    let nextY = this.road[index - 1];
+                    if (this.positionAvailable(this.x, nextY)) {
+                        this.y = this.road[index - 1];
                         moved = true;
                         found = true;
                     }
                 }
                 index++;
             }
-        } else if(key === 'down' && this.y < this.road[this.road.length-1]){
+        } else if (key === 'down' && this.y < this.road[this.road.length - 1]) {
             let index = 0;
             let found = false;
-            while(index < this.road.length && !found){
-                if(this.y === this.road[index]){
-                    let nextY = this.road[index+1];
-                    if(this.positionAvailable(this.x, nextY)){
-                        this.y = this.road[index+1];
+            while (index < this.road.length && !found) {
+                if (this.y === this.road[index]) {
+                    let nextY = this.road[index + 1];
+                    if (this.positionAvailable(this.x, nextY)) {
+                        this.y = this.road[index + 1];
                         moved = true;
                         found = true;
                     }
                 }
                 index++;
             }
-        } else if(key === 'up' && this.y === this.road[0]){
+        } else if (key === 'up' && this.y === this.road[0]) {
             player.resetPosition();
             showFinishModal("Victory!");
         }
-        if(moved && this.y <= 400 && this.y != 220){
+        if (moved && this.y <= 400 && this.y != 220) {
             this.score += 1;
-            if(bestScore < this.score)
+            if (bestScore < this.score)
                 bestScore = this.score;
-        } else if (moved && this.score > 0 && this.y > 400){
-            if(this.score > 1)
+        } else if (moved && this.score > 0 && this.y > 400) {
+            if (this.score > 1)
                 this.score -= 2;
             else
                 this.score = 0;
@@ -192,8 +192,8 @@ var Collectible = function(x, y) {
 
 // Draw the enemy on the screen, required method for game
 Collectible.prototype.render = function() {
-    if(this.allowCollect)
-        ctx.drawImage(Resources.get(this.sprite), this.x+10, this.y+50, 80, 80);
+    if (this.allowCollect)
+        ctx.drawImage(Resources.get(this.sprite), this.x + 10, this.y + 50, 80, 80);
 };
 
 // Rocks that block the road
@@ -218,16 +218,16 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-    if(player != null)
+    if (player != null)
         player.handleInput(allowedKeys[e.keyCode]);
 });
 
-document.getElementById("change-player").addEventListener('click', function(e){
+document.getElementById("change-player").addEventListener('click', function(e) {
     document.getElementById("victory-modal").style.display = "none";
     document.getElementById("player-selection").style.display = "block";
 });
 
-document.getElementById("play-again").addEventListener('click', function(e){
+document.getElementById("play-again").addEventListener('click', function(e) {
     player.score = 0;
     player.lifes = 3;
     player.allowMove = true;
@@ -239,71 +239,75 @@ document.getElementById("play-again").addEventListener('click', function(e){
     startTimer();
 });
 
-function createRocks(){
+function createRocks() {
     let roadX = [0, 100, 200, 300, 400];
     let index = Math.floor(Math.random() * roadX.length);
     let firstX = roadX[index];
-    roadX.splice(index,1);
+    roadX.splice(index, 1);
     index = Math.floor(Math.random() * roadX.length);
     let secondX = roadX[index];
-    roadX.splice(index,1);
+    roadX.splice(index, 1);
     index = Math.floor(Math.random() * roadX.length);
     let thirdX = roadX[index];
     allRocks = [new Rock(firstX, 220),
-                new Rock(secondX, 220),
-                new Rock(thirdX, 220)];
+        new Rock(secondX, 220),
+        new Rock(thirdX, 220)
+    ];
 }
 
-function createEnemies(){
+function createEnemies() {
     let iceGolemSprites = ['images/ice-golem/ice-golem-00.png',
-                    'images/ice-golem/ice-golem-01.png',
-                    'images/ice-golem/ice-golem-02.png',
-                    'images/ice-golem/ice-golem-03.png',
-                    'images/ice-golem/ice-golem-04.png',
-                    'images/ice-golem/ice-golem-05.png',
-                    'images/ice-golem/ice-golem-06.png',
-                    'images/ice-golem/ice-golem-07.png',
-                    'images/ice-golem/ice-golem-08.png',
-                    'images/ice-golem/ice-golem-09.png',
-                    'images/ice-golem/ice-golem-10.png',
-                    'images/ice-golem/ice-golem-11.png'];
+        'images/ice-golem/ice-golem-01.png',
+        'images/ice-golem/ice-golem-02.png',
+        'images/ice-golem/ice-golem-03.png',
+        'images/ice-golem/ice-golem-04.png',
+        'images/ice-golem/ice-golem-05.png',
+        'images/ice-golem/ice-golem-06.png',
+        'images/ice-golem/ice-golem-07.png',
+        'images/ice-golem/ice-golem-08.png',
+        'images/ice-golem/ice-golem-09.png',
+        'images/ice-golem/ice-golem-10.png',
+        'images/ice-golem/ice-golem-11.png'
+    ];
     let fireGolemSprites = ['images/fire-golem/fire-golem-00.png',
-                    'images/fire-golem/fire-golem-01.png',
-                    'images/fire-golem/fire-golem-02.png',
-                    'images/fire-golem/fire-golem-03.png',
-                    'images/fire-golem/fire-golem-04.png',
-                    'images/fire-golem/fire-golem-05.png',
-                    'images/fire-golem/fire-golem-06.png',
-                    'images/fire-golem/fire-golem-07.png',
-                    'images/fire-golem/fire-golem-08.png',
-                    'images/fire-golem/fire-golem-09.png',
-                    'images/fire-golem/fire-golem-10.png',
-                    'images/fire-golem/fire-golem-11.png']                    
+        'images/fire-golem/fire-golem-01.png',
+        'images/fire-golem/fire-golem-02.png',
+        'images/fire-golem/fire-golem-03.png',
+        'images/fire-golem/fire-golem-04.png',
+        'images/fire-golem/fire-golem-05.png',
+        'images/fire-golem/fire-golem-06.png',
+        'images/fire-golem/fire-golem-07.png',
+        'images/fire-golem/fire-golem-08.png',
+        'images/fire-golem/fire-golem-09.png',
+        'images/fire-golem/fire-golem-10.png',
+        'images/fire-golem/fire-golem-11.png'
+    ]
     allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
-                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
-                  new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
-                  new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, fireGolemSprites),
-                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, fireGolemSprites)];
+        new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+        new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+        new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+        new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+        new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, fireGolemSprites),
+        new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, fireGolemSprites)
+    ];
 }
 
-function createCollectible(delay = 0){
-    setTimeout(function(){
+function createCollectible(delay = 0) {
+    setTimeout(function() {
         let roadY = [50, 150, 220, 300, 400];
         let roadX = [0, 100, 200, 300, 400];
         let yPosition = roadY[Math.floor(Math.random() * roadY.length)];
         let xPosition;
-        if(yPosition === 220){
+        if (yPosition === 220) {
             let repeat = true;
-            while(repeat){
+            while (repeat) {
                 xPosition = roadX[Math.floor(Math.random() * roadX.length)];
                 let available = true;
-                for(rock of allRocks){
-                    if(rock.x === xPosition)
+                for (rock of allRocks) {
+                    if (rock.x === xPosition)
                         available = false;
                 }
-                if(available)
+                if (available)
                     repeat = false;
             }
         } else {
@@ -315,38 +319,38 @@ function createCollectible(delay = 0){
 }
 
 let arrowElements = document.getElementsByClassName("arrow");
-for(arrow of arrowElements){
-    arrow.addEventListener('click', function(e){
+for (arrow of arrowElements) {
+    arrow.addEventListener('click', function(e) {
         let playersArray = [...document.getElementsByClassName("player")];
         let index = -1;
         let i = 0;
         let exit = false;
-        if(this.getAttribute("id") == "right-arrow"){
-            while(!exit && i < playersArray.length){
-                if(playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0){
+        if (this.getAttribute("id") == "right-arrow") {
+            while (!exit && i < playersArray.length) {
+                if (playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0) {
                     playersArray[i].style.display = "none";
                     exit = true;
-                    index = i+1;
-                    if(index == playersArray.length)
+                    index = i + 1;
+                    if (index == playersArray.length)
                         index = 0;
                 }
                 i++
             }
-            if(index != -1){
+            if (index != -1) {
                 playersArray[index].style.display = "block";
             }
-        } else if (this.getAttribute("id") == "left-arrow"){
-            while(!exit && i < playersArray.length){
-                if(playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0){
+        } else if (this.getAttribute("id") == "left-arrow") {
+            while (!exit && i < playersArray.length) {
+                if (playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0) {
                     playersArray[i].style.display = "none";
                     exit = true;
-                    index = i-1;
-                    if(index == -1)
-                        index = playersArray.length-1;
+                    index = i - 1;
+                    if (index == -1)
+                        index = playersArray.length - 1;
                 }
                 i++
             }
-            if(index != -1){
+            if (index != -1) {
                 playersArray[index].style.display = "block";
             }
         }
@@ -354,27 +358,28 @@ for(arrow of arrowElements){
 }
 
 let playersElements = document.getElementsByClassName("player");
-for(item of playersElements){
-    item.addEventListener('click', function(e){
+for (item of playersElements) {
+    item.addEventListener('click', function(e) {
         let playerNumber = this.getAttribute("data-index");
-        let playerSprites = ['images/player-'+playerNumber+'/player-00.png',
-                        'images/player-'+playerNumber+'/player-01.png',
-                        'images/player-'+playerNumber+'/player-02.png',
-                        'images/player-'+playerNumber+'/player-03.png',
-                        'images/player-'+playerNumber+'/player-04.png',
-                        'images/player-'+playerNumber+'/player-05.png',
-                        'images/player-'+playerNumber+'/player-06.png',
-                        'images/player-'+playerNumber+'/player-07.png',
-                        'images/player-'+playerNumber+'/player-08.png',
-                        'images/player-'+playerNumber+'/player-09.png',
-                        'images/player-'+playerNumber+'/player-10.png',
-                        'images/player-'+playerNumber+'/player-11.png',
-                        'images/player-'+playerNumber+'/player-12.png',
-                        'images/player-'+playerNumber+'/player-13.png',
-                        'images/player-'+playerNumber+'/player-14.png',
-                        'images/player-'+playerNumber+'/player-15.png',
-                        'images/player-'+playerNumber+'/player-16.png',
-                        'images/player-'+playerNumber+'/player-17.png'];
+        let playerSprites = ['images/player-' + playerNumber + '/player-00.png',
+            'images/player-' + playerNumber + '/player-01.png',
+            'images/player-' + playerNumber + '/player-02.png',
+            'images/player-' + playerNumber + '/player-03.png',
+            'images/player-' + playerNumber + '/player-04.png',
+            'images/player-' + playerNumber + '/player-05.png',
+            'images/player-' + playerNumber + '/player-06.png',
+            'images/player-' + playerNumber + '/player-07.png',
+            'images/player-' + playerNumber + '/player-08.png',
+            'images/player-' + playerNumber + '/player-09.png',
+            'images/player-' + playerNumber + '/player-10.png',
+            'images/player-' + playerNumber + '/player-11.png',
+            'images/player-' + playerNumber + '/player-12.png',
+            'images/player-' + playerNumber + '/player-13.png',
+            'images/player-' + playerNumber + '/player-14.png',
+            'images/player-' + playerNumber + '/player-15.png',
+            'images/player-' + playerNumber + '/player-16.png',
+            'images/player-' + playerNumber + '/player-17.png'
+        ];
         player = new Player(playerSprites);
         createEnemies();
         createRocks();
@@ -385,7 +390,7 @@ for(item of playersElements){
     });
 }
 
-function showFinishModal(message){
+function showFinishModal(message) {
     stopTimer();
     player.allowMove = false;
     document.getElementById("victory-modal").firstElementChild.firstElementChild.innerText = message;
