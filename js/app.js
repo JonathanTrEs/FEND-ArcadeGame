@@ -41,6 +41,8 @@ var Player = function(sprite = 'images/player-1.png') {
     this.allowMove = true;
     this.road = [50, 150, 220, 300, 400, 500];
     this.sprite = sprite;
+    this.heartSprite = "images/heart.svg";
+    this.lifes = 3;
 };
 
 Player.prototype.update = function(dt) {
@@ -50,6 +52,9 @@ Player.prototype.update = function(dt) {
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x-20, this.y, 150, 150);
+    for(let i = 0; i < this.lifes; i++){
+        ctx.drawImage(Resources.get(this.heartSprite), this.x-5, this.y+(i*10), 30, 30);
+    }    
     ctx.font = "20px Pixeled";
     ctx.fillText(this.score, 10, 90);
     ctx.font = "10px Pixeled";
@@ -61,8 +66,8 @@ Player.prototype.handleCollision = function(key) {
     for(enemy of allEnemies){
         if(enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)){
             this.score = 0;
+            this.lifes--;
             this.resetPosition();
-            startTimer();
         }
     }
     if(collectible != null && collectible.y === this.y && collectible.x === this.x){
@@ -79,6 +84,9 @@ Player.prototype.handleCollision = function(key) {
 Player.prototype.resetPosition = function(key) {
     this.x = 200;
     this.y = 500;
+    if(this.lifes <= 0){
+        showFinishModal("You died!");
+    }
 }
 
 Player.prototype.positionAvailable = function(nextX, nextY) {
@@ -134,10 +142,8 @@ Player.prototype.handleInput = function(key) {
                 index++;
             }
         } else if(key === 'up' && this.y === this.road[0]){
-            stopTimer();
-            this.resetPosition();
-            this.allowMove = false;
-            document.getElementById("victory-modal").style.display = "block";
+            player.resetPosition();
+            showFinishModal("Victory!");
         }
         if(moved && this.y <= 400 && this.y != 220){
             this.score += 1;
@@ -192,6 +198,7 @@ document.addEventListener('keyup', function(e) {
 
 document.getElementById("play-again").addEventListener('click', function(e){
     player.score = 0;
+    player.lifes = 3;
     player.allowMove = true;
     createEnemies();
     createRocks();
@@ -300,4 +307,11 @@ for(item of playersElements){
         document.getElementById("player-selection").style.display = "none";
         startTimer();
     });
+}
+
+function showFinishModal(message){
+    stopTimer();
+    player.allowMove = false;
+    document.getElementById("victory-modal").firstElementChild.firstElementChild.innerText = message;
+    document.getElementById("victory-modal").style.display = "block";
 }
