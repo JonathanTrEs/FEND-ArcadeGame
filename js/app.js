@@ -1,10 +1,10 @@
 // Enemies our player must avoid
-var Enemy = function(y = 150, speed = 400) {
+var Enemy = function(y = 150, speed = 400, sprite = 'images/ice-golem.png') {
     this.x = -200;
     this.y = y;
     this.speed = speed;
     this.road = [50, 150, 300, 400];
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = sprite;
 };
 
 // Update the enemy's position, required method for game
@@ -21,7 +21,7 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 150, 150);
 };
 
 // Now write your own player class
@@ -34,7 +34,7 @@ var Player = function() {
     this.bestScore = 0;
     this.allowMove = true;
     this.road = [50, 150, 220, 300, 400, 500];
-    this.sprite = 'images/char-boy.png';
+    this.sprite = 'images/player.png';
 };
 
 Player.prototype.update = function(dt) {
@@ -43,7 +43,7 @@ Player.prototype.update = function(dt) {
 
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x-20, this.y, 150, 150);
     ctx.font = "20px Pixeled";
     ctx.fillText(this.score, 10, 90);
     ctx.font = "10px Pixeled";
@@ -133,7 +133,7 @@ Player.prototype.handleInput = function(key) {
             this.allowMove = false;
             document.getElementById("victory-modal").style.display = "block";
         }
-        if(moved && this.y <= 400){
+        if(moved && this.y <= 400 && this.y != 220){
             this.score += 1;
             if(this.bestScore < this.score)
                 this.bestScore = this.score;
@@ -149,20 +149,20 @@ var Collectible = function(x, y) {
     this.y = y;
     this.value = 3;
     this.allowCollect = true;
-    this.sprite = 'images/Star.png';
+    this.sprite = 'images/collectible.svg';
 };
 
 // Draw the enemy on the screen, required method for game
 Collectible.prototype.render = function() {
     if(this.allowCollect)
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+        ctx.drawImage(Resources.get(this.sprite), this.x+10, this.y+50, 80, 80);
 };
 
 // Rocks that block the road
 var Rock = function(x, y) {
     this.x = x;
     this.y = y;
-    this.sprite = 'images/Rock.png';
+    this.sprite = 'images/rock.png';
 };
 
 // Draw the enemy on the screen, required method for game
@@ -210,13 +210,13 @@ function createRocks(){
 }
 
 function createEnemies(){
-    allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600),
-                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600)];
+    allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
+                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
+                  new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
+                  new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, 'images/fire-golem.png'),
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, 'images/fire-golem.png'),
+                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, 'images/fire-golem.png')];
 }
 
 function createCollectible(delay = 0){
@@ -251,7 +251,7 @@ let allRocks = [];
 let allEnemies = [];
 let player = new Player();
 
-createCollectible();
-createRocks();
 createEnemies();
+createRocks();
+createCollectible();
 startTimer();

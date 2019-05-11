@@ -150,13 +150,13 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
         allRocks.forEach(function(rock) {
             rock.render();
         });
         collectible.render();
+        allEnemies.forEach(function(enemy) {
+            enemy.render();
+        });
         player.render();
     }
 
@@ -176,10 +176,11 @@ var Engine = (function(global) {
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png',
-        'images/Star.png',
-        'images/Rock.png'
+        'images/collectible.svg',
+        'images/fire-golem.png',
+        'images/ice-golem.png',
+        'images/player.png',
+        'images/rock.png'
     ]);
     Resources.onReady(init);
 
