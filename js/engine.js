@@ -96,7 +96,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         if(player != null)
-            player.update();
+            player.update(dt);
     }
 
     /* This function initially draws the "game level", it will then call
@@ -178,17 +178,39 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
+        'images/rock.png',
+        'images/heart.svg',
+        'images/player-1.png',
+        'images/player-2.png',
+        'images/player-3.png',
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
         'images/collectible.svg',
-        'images/fire-golem.png',
-        'images/ice-golem.png',
-        'images/player-1.png',
-        'images/player-2.png',
-        'images/player-3.png',
-        'images/heart.svg',
-        'images/rock.png'
+        'images/ice-golem/ice-golem-00.png',
+        'images/ice-golem/ice-golem-01.png',
+        'images/ice-golem/ice-golem-02.png',
+        'images/ice-golem/ice-golem-03.png',
+        'images/ice-golem/ice-golem-04.png',
+        'images/ice-golem/ice-golem-05.png',
+        'images/ice-golem/ice-golem-06.png',
+        'images/ice-golem/ice-golem-07.png',
+        'images/ice-golem/ice-golem-08.png',
+        'images/ice-golem/ice-golem-09.png',
+        'images/ice-golem/ice-golem-10.png',
+        'images/ice-golem/ice-golem-11.png',
+        'images/fire-golem/fire-golem-00.png',
+        'images/fire-golem/fire-golem-01.png',
+        'images/fire-golem/fire-golem-02.png',
+        'images/fire-golem/fire-golem-03.png',
+        'images/fire-golem/fire-golem-04.png',
+        'images/fire-golem/fire-golem-05.png',
+        'images/fire-golem/fire-golem-06.png',
+        'images/fire-golem/fire-golem-07.png',
+        'images/fire-golem/fire-golem-08.png',
+        'images/fire-golem/fire-golem-09.png',
+        'images/fire-golem/fire-golem-10.png',
+        'images/fire-golem/fire-golem-11.png'
     ]);
     Resources.onReady(init);
 

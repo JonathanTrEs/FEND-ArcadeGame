@@ -5,22 +5,34 @@ let allEnemies = [];
 let player;
 
 // Enemies our player must avoid
-var Enemy = function(y = 150, speed = 400, sprite = 'images/ice-golem.png') {
+var Enemy = function(y = 150, speed = 400, spriteArray) {
     this.x = -200;
     this.y = y;
     this.speed = speed;
     this.road = [50, 150, 300, 400];
-    this.sprite = sprite;
+    this.sprite = spriteArray[0];
+    this.spriteArray = spriteArray;
+    this.spriteIndex = 0;
+    this.updateSprite = true;
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    if(this.x < 900)
+    if(this.x < 900){
         this.x += this.speed * dt;
-    else {
+        if(this.updateSprite){
+            this.spriteIndex++;
+            if(this.spriteIndex >= this.spriteArray.length)
+                this.spriteIndex = 0;
+            this.sprite = this.spriteArray[this.spriteIndex];
+            this.updateSprite = false;
+        } else
+            this.updateSprite = true;
+    } else {
         this.y = this.road[Math.floor(Math.random() * this.road.length)];
         this.speed = Math.floor(Math.random() * (50 - 600)) + 600;
+        this.sprite = 'images/ice-golem/ice-golem-00.png';
         this.x = -200;
     }
 };
@@ -150,7 +162,10 @@ Player.prototype.handleInput = function(key) {
             if(this.bestScore < this.score)
                 this.bestScore = this.score;
         } else if (moved && this.score > 0 && this.y > 400){
-            this.score -= 2;
+            if(this.score > 1)
+                this.score -= 2;
+            else
+                this.score = 0;
         }
     }
 };
@@ -224,13 +239,37 @@ function createRocks(){
 }
 
 function createEnemies(){
-    allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
-                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
-                  new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600, 'images/ice-golem.png'),
-                  new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, 'images/fire-golem.png'),
-                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, 'images/fire-golem.png'),
-                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, 'images/fire-golem.png')];
+    let iceGolemSprites = ['images/ice-golem/ice-golem-00.png',
+                    'images/ice-golem/ice-golem-01.png',
+                    'images/ice-golem/ice-golem-02.png',
+                    'images/ice-golem/ice-golem-03.png',
+                    'images/ice-golem/ice-golem-04.png',
+                    'images/ice-golem/ice-golem-05.png',
+                    'images/ice-golem/ice-golem-06.png',
+                    'images/ice-golem/ice-golem-07.png',
+                    'images/ice-golem/ice-golem-08.png',
+                    'images/ice-golem/ice-golem-09.png',
+                    'images/ice-golem/ice-golem-10.png',
+                    'images/ice-golem/ice-golem-11.png'];
+    let fireGolemSprites = ['images/fire-golem/fire-golem-00.png',
+                    'images/fire-golem/fire-golem-01.png',
+                    'images/fire-golem/fire-golem-02.png',
+                    'images/fire-golem/fire-golem-03.png',
+                    'images/fire-golem/fire-golem-04.png',
+                    'images/fire-golem/fire-golem-05.png',
+                    'images/fire-golem/fire-golem-06.png',
+                    'images/fire-golem/fire-golem-07.png',
+                    'images/fire-golem/fire-golem-08.png',
+                    'images/fire-golem/fire-golem-09.png',
+                    'images/fire-golem/fire-golem-10.png',
+                    'images/fire-golem/fire-golem-11.png']                    
+    allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+                  new Enemy(400, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+                  new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
+                  new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, fireGolemSprites),
+                  new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, fireGolemSprites)];
 }
 
 function createCollectible(delay = 0){
