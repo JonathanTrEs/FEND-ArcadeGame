@@ -14,7 +14,7 @@ body {
 
 header {
     font-family: "Pixeled";
-    color: #c84513;
+    color: #ffffff;
 }
 
 canvas {
@@ -75,6 +75,8 @@ button:focus {
 
 .replay {
     background: url('../images/icons/replay.svg') no-repeat center center;
+    background-size: 90%;
+    width: 15%;
 }
 
 #victory-modal {
@@ -89,17 +91,29 @@ button:focus {
 }
 
 .left-arrow {
-    background: url('../images/icons/left-arrow.svg') no-repeat center center;
+    background: url('../images/icons/arrow.svg') no-repeat center center;
+    transform: rotate(-90deg);
+    background-size: contain;
+}
+
+button.left-arrow:hover {
+    transform: scale(1.10) rotate(-90deg);
 }
 
 .right-arrow {
-    background: url('../images/icons/right-arrow.svg') no-repeat center center;
+    background: url('../images/icons/arrow.svg') no-repeat center center;
+    transform: rotate(90deg);
+    background-size: contain;
+}
+
+button.right-arrow:hover {
+    transform: scale(1.10) rotate(90deg);
 }
 
 .selection {
     display: flex;
     justify-content: center;
-    height: 2em;
+    height: 3em;
     margin-top: 3.5em;
 }
 
