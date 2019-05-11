@@ -1,3 +1,4 @@
+// Global variables
 let collectible;
 let timer;
 let allRocks = [];
@@ -17,8 +18,9 @@ var Enemy = function(y = 150, speed = 400, spriteArray) {
     this.updateSprite = true;
 };
 
-// Update the enemy's position, required method for game
+// Update the enemy's position
 // Parameter: dt, a time delta between ticks
+// Handle the enemy animation
 Enemy.prototype.update = function(dt) {
     if (this.x < 900) {
         this.x += this.speed * dt;
@@ -34,18 +36,17 @@ Enemy.prototype.update = function(dt) {
         this.y = this.road[Math.floor(Math.random() * this.road.length)];
         this.speed = Math.floor(Math.random() * (50 - 600)) + 600;
         this.sprite = 'images/ice-golem/ice-golem-00.png';
+        this.spriteIndex = 0;
         this.x = -200;
     }
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 150, 150);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+// The player class
 var Player = function(spriteArray) {
     this.x = 200;
     this.y = 500;
@@ -60,7 +61,9 @@ var Player = function(spriteArray) {
     this.lifes = 3;
 };
 
-Player.prototype.update = function(dt) {
+// Parameter: dt, a time delta between ticks
+// Handle the player animation "idle"
+Player.prototype.update = function() {
     if (this.updateSprite) {
         this.spriteIndex++;
         if (this.spriteIndex >= this.spriteArray.length)
@@ -72,7 +75,8 @@ Player.prototype.update = function(dt) {
     this.handleCollision();
 };
 
-// Draw the player on the screen, required method for game
+// Draw the player on the screen
+// Also draw her life, the score and the time
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x - 20, this.y, 150, 150);
     for (let i = 0; i < this.lifes; i++) {
@@ -85,6 +89,8 @@ Player.prototype.render = function() {
     ctx.fillText(timer, 430, 80);
 };
 
+// Handle the collision between the player and the enemies
+// Or between the player and the collectible
 Player.prototype.handleCollision = function(key) {
     for (enemy of allEnemies) {
         if (enemy.y === this.y && (this.x >= enemy.x - 50 && this.x <= enemy.x + 50)) {
@@ -102,16 +108,21 @@ Player.prototype.handleCollision = function(key) {
             createCollectible(1500);
         }
     }
-}
+};
 
+
+// Reset the player position to the initial
+// and check if the player died
 Player.prototype.resetPosition = function(key) {
     this.x = 200;
     this.y = 500;
     if (this.lifes <= 0) {
         showFinishModal("You died!");
     }
-}
+};
 
+// Check if the position where the player wants to move
+// is blocked or not
 Player.prototype.positionAvailable = function(nextX, nextY) {
     let available = true;
     for (rock of allRocks) {
@@ -119,8 +130,9 @@ Player.prototype.positionAvailable = function(nextX, nextY) {
             available = false;
     }
     return available;
-}
+};
 
+// Handle the data entry from the user
 Player.prototype.handleInput = function(key) {
     if (this.allowMove) {
         let moved = false;
@@ -190,7 +202,7 @@ var Collectible = function(x, y) {
     this.sprite = 'images/collectible.svg';
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the collectible on the screen
 Collectible.prototype.render = function() {
     if (this.allowCollect)
         ctx.drawImage(Resources.get(this.sprite), this.x + 10, this.y + 50, 80, 80);
@@ -203,42 +215,13 @@ var Rock = function(x, y) {
     this.sprite = 'images/rock.png';
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the rocks on the screen
 Rock.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
-    if (player != null)
-        player.handleInput(allowedKeys[e.keyCode]);
-});
-
-document.getElementById("change-player").addEventListener('click', function(e) {
-    document.getElementById("victory-modal").style.display = "none";
-    document.getElementById("player-selection").style.display = "block";
-});
-
-document.getElementById("play-again").addEventListener('click', function(e) {
-    player.score = 0;
-    player.lifes = 3;
-    player.allowMove = true;
-    createEnemies();
-    createRocks();
-    createCollectible();
-    document.getElementById("victory-modal").style.display = "none";
-    document.getElementById("gameCanvas").style.filter = "blur(0)";
-    startTimer();
-});
-
+// Create the rocks on the road
+// Three rocks along the middle road
 function createRocks() {
     let roadX = [0, 100, 200, 300, 400];
     let index = Math.floor(Math.random() * roadX.length);
@@ -255,6 +238,7 @@ function createRocks() {
     ];
 }
 
+// Create all the enemies
 function createEnemies() {
     let iceGolemSprites = ['images/ice-golem/ice-golem-00.png',
         'images/ice-golem/ice-golem-01.png',
@@ -281,7 +265,7 @@ function createEnemies() {
         'images/fire-golem/fire-golem-09.png',
         'images/fire-golem/fire-golem-10.png',
         'images/fire-golem/fire-golem-11.png'
-    ]
+    ];
     allEnemies = [new Enemy(50, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
         new Enemy(150, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
         new Enemy(300, Math.floor(Math.random() * (50 - 600)) + 600, iceGolemSprites),
@@ -292,6 +276,8 @@ function createEnemies() {
     ];
 }
 
+// Create the collectible
+// A delay can be recieved in order to wait to create it
 function createCollectible(delay = 0) {
     setTimeout(function() {
         let roadY = [50, 150, 220, 300, 400];
@@ -318,78 +304,7 @@ function createCollectible(delay = 0) {
     }, delay);
 }
 
-let arrowElements = document.getElementsByClassName("arrow");
-for (arrow of arrowElements) {
-    arrow.addEventListener('click', function(e) {
-        let playersArray = [...document.getElementsByClassName("player")];
-        let index = -1;
-        let i = 0;
-        let exit = false;
-        if (this.getAttribute("id") == "right-arrow") {
-            while (!exit && i < playersArray.length) {
-                if (playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0) {
-                    playersArray[i].style.display = "none";
-                    exit = true;
-                    index = i + 1;
-                    if (index == playersArray.length)
-                        index = 0;
-                }
-                i++
-            }
-            if (index != -1) {
-                playersArray[index].style.display = "block";
-            }
-        } else if (this.getAttribute("id") == "left-arrow") {
-            while (!exit && i < playersArray.length) {
-                if (playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0) {
-                    playersArray[i].style.display = "none";
-                    exit = true;
-                    index = i - 1;
-                    if (index == -1)
-                        index = playersArray.length - 1;
-                }
-                i++
-            }
-            if (index != -1) {
-                playersArray[index].style.display = "block";
-            }
-        }
-    });
-}
-
-let playersElements = document.getElementsByClassName("player");
-for (item of playersElements) {
-    item.addEventListener('click', function(e) {
-        let playerNumber = this.getAttribute("data-index");
-        let playerSprites = ['images/player-' + playerNumber + '/player-00.png',
-            'images/player-' + playerNumber + '/player-01.png',
-            'images/player-' + playerNumber + '/player-02.png',
-            'images/player-' + playerNumber + '/player-03.png',
-            'images/player-' + playerNumber + '/player-04.png',
-            'images/player-' + playerNumber + '/player-05.png',
-            'images/player-' + playerNumber + '/player-06.png',
-            'images/player-' + playerNumber + '/player-07.png',
-            'images/player-' + playerNumber + '/player-08.png',
-            'images/player-' + playerNumber + '/player-09.png',
-            'images/player-' + playerNumber + '/player-10.png',
-            'images/player-' + playerNumber + '/player-11.png',
-            'images/player-' + playerNumber + '/player-12.png',
-            'images/player-' + playerNumber + '/player-13.png',
-            'images/player-' + playerNumber + '/player-14.png',
-            'images/player-' + playerNumber + '/player-15.png',
-            'images/player-' + playerNumber + '/player-16.png',
-            'images/player-' + playerNumber + '/player-17.png'
-        ];
-        player = new Player(playerSprites);
-        createEnemies();
-        createRocks();
-        createCollectible();
-        document.getElementById("player-selection").style.display = "none";
-        document.getElementById("gameCanvas").style.filter = "blur(0)";
-        startTimer();
-    });
-}
-
+// Show the finish modal
 function showFinishModal(message) {
     stopTimer();
     player.allowMove = false;
@@ -397,3 +312,130 @@ function showFinishModal(message) {
     document.getElementById("gameCanvas").style.filter = "blur(4px)";
     document.getElementById("victory-modal").style.display = "block";
 }
+
+// Slider that allow the user to chose the player
+function setupSlider() {
+    let arrowElements = document.getElementsByClassName("arrow");
+    for (arrow of arrowElements) {
+        arrow.addEventListener('click', function(e) {
+            let playersArray = [...document.getElementsByClassName("player")];
+            let index = -1;
+            let i = 0;
+            let exit = false;
+            if (this.getAttribute("id") == "right-arrow") {
+                while (!exit && i < playersArray.length) {
+                    if (playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0) {
+                        playersArray[i].style.display = "none";
+                        exit = true;
+                        index = i + 1;
+                        if (index == playersArray.length)
+                            index = 0;
+                    }
+                    i++;
+                }
+                if (index != -1) {
+                    playersArray[index].style.display = "block";
+                }
+            } else if (this.getAttribute("id") == "left-arrow") {
+                while (!exit && i < playersArray.length) {
+                    if (playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0) {
+                        playersArray[i].style.display = "none";
+                        exit = true;
+                        index = i - 1;
+                        if (index == -1)
+                            index = playersArray.length - 1;
+                    }
+                    i++;
+                }
+                if (index != -1) {
+                    playersArray[index].style.display = "block";
+                }
+            }
+        });
+    }
+}
+
+// Listen for the players buttons and create the player object base on
+// the choose of the user
+function setupPlayer() {
+    let playersElements = document.getElementsByClassName("player");
+    for (item of playersElements) {
+        item.addEventListener('click', function(e) {
+            let playerNumber = this.getAttribute("data-index");
+            let playerSprites = ['images/player-' + playerNumber + '/player-00.png',
+                'images/player-' + playerNumber + '/player-01.png',
+                'images/player-' + playerNumber + '/player-02.png',
+                'images/player-' + playerNumber + '/player-03.png',
+                'images/player-' + playerNumber + '/player-04.png',
+                'images/player-' + playerNumber + '/player-05.png',
+                'images/player-' + playerNumber + '/player-06.png',
+                'images/player-' + playerNumber + '/player-07.png',
+                'images/player-' + playerNumber + '/player-08.png',
+                'images/player-' + playerNumber + '/player-09.png',
+                'images/player-' + playerNumber + '/player-10.png',
+                'images/player-' + playerNumber + '/player-11.png',
+                'images/player-' + playerNumber + '/player-12.png',
+                'images/player-' + playerNumber + '/player-13.png',
+                'images/player-' + playerNumber + '/player-14.png',
+                'images/player-' + playerNumber + '/player-15.png',
+                'images/player-' + playerNumber + '/player-16.png',
+                'images/player-' + playerNumber + '/player-17.png'
+            ];
+            player = new Player(playerSprites);
+            createEnemies();
+            createRocks();
+            createCollectible();
+            document.getElementById("player-selection").style.display = "none";
+            document.getElementById("gameCanvas").style.filter = "blur(0)";
+            startTimer();
+        });
+    }
+}
+
+// Listen for the user input
+function manageKeyboardEvents() {
+    // This listens for key presses and sends the keys to your
+    // Player.handleInput() method. You don't need to modify this.
+    document.addEventListener('keyup', function(e) {
+        var allowedKeys = {
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down'
+        };
+        if (player != null)
+            player.handleInput(allowedKeys[e.keyCode]);
+    });
+}
+
+// Events for the different buttons on the modals
+// Change-player button that show the character selection modal
+// Play-again that restart the game
+function manageButtonsEvents() {
+    document.getElementById("change-player").addEventListener('click', function(e) {
+        document.getElementById("victory-modal").style.display = "none";
+        document.getElementById("player-selection").style.display = "block";
+    });
+
+    document.getElementById("play-again").addEventListener('click', function(e) {
+        player.score = 0;
+        player.lifes = 3;
+        player.allowMove = true;
+        createEnemies();
+        createRocks();
+        createCollectible();
+        document.getElementById("victory-modal").style.display = "none";
+        document.getElementById("gameCanvas").style.filter = "blur(0)";
+        startTimer();
+    });
+}
+
+// Setup the environment
+function setup() {
+    setupSlider();
+    setupPlayer();
+    manageKeyboardEvents();
+    manageButtonsEvents();
+}
+
+setup();
