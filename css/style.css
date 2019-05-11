@@ -79,6 +79,12 @@ button:focus {
     width: 15%;
 }
 
+.change-player {
+    background: url('../images/icons/change-player.svg') no-repeat center center;
+    background-size: 90%;
+    width: 15%;
+}
+
 #victory-modal {
     display: none;
 }

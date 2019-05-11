@@ -3,6 +3,7 @@ let timer;
 let allRocks = [];
 let allEnemies = [];
 let player;
+bestScore = 0;
 
 // Enemies our player must avoid
 var Enemy = function(y = 150, speed = 400, spriteArray) {
@@ -49,7 +50,6 @@ var Player = function(spriteArray) {
     this.x = 200;
     this.y = 500;
     this.score = 0;
-    this.bestScore = 0;
     this.allowMove = true;
     this.road = [50, 150, 220, 300, 400, 500];
     this.sprite = spriteArray[0];
@@ -81,7 +81,7 @@ Player.prototype.render = function() {
     ctx.font = "20px Pixeled";
     ctx.fillText(this.score, 10, 90);
     ctx.font = "10px Pixeled";
-    ctx.fillText("Best " + this.bestScore, 10, 110);
+    ctx.fillText("Best " + bestScore, 10, 110);
     ctx.fillText(timer, 430, 80);
 };
 
@@ -97,8 +97,8 @@ Player.prototype.handleCollision = function(key) {
         if(collectible.allowCollect){
             collectible.allowCollect = false;
             this.score += collectible.value;
-            if(this.bestScore < this.score)
-                this.bestScore = this.score;
+            if(bestScore < this.score)
+                bestScore = this.score;
             createCollectible(1500);
         }
     }
@@ -170,8 +170,8 @@ Player.prototype.handleInput = function(key) {
         }
         if(moved && this.y <= 400 && this.y != 220){
             this.score += 1;
-            if(this.bestScore < this.score)
-                this.bestScore = this.score;
+            if(bestScore < this.score)
+                bestScore = this.score;
         } else if (moved && this.score > 0 && this.y > 400){
             if(this.score > 1)
                 this.score -= 2;
@@ -220,6 +220,11 @@ document.addEventListener('keyup', function(e) {
     };
     if(player != null)
         player.handleInput(allowedKeys[e.keyCode]);
+});
+
+document.getElementById("change-player").addEventListener('click', function(e){
+    document.getElementById("victory-modal").style.display = "none";
+    document.getElementById("player-selection").style.display = "block";
 });
 
 document.getElementById("play-again").addEventListener('click', function(e){
