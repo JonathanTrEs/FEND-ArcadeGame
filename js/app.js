@@ -204,6 +204,7 @@ document.getElementById("play-again").addEventListener('click', function(e){
     createRocks();
     createCollectible();
     document.getElementById("victory-modal").style.display = "none";
+    document.getElementById("gameCanvas").style.filter = "blur(0)";
     startTimer();
 });
 
@@ -305,6 +306,7 @@ for(item of playersElements){
         createRocks();
         createCollectible();
         document.getElementById("player-selection").style.display = "none";
+        document.getElementById("gameCanvas").style.filter = "blur(0)";
         startTimer();
     });
 }
@@ -313,5 +315,6 @@ function showFinishModal(message){
     stopTimer();
     player.allowMove = false;
     document.getElementById("victory-modal").firstElementChild.firstElementChild.innerText = message;
+    document.getElementById("gameCanvas").style.filter = "blur(4px)";
     document.getElementById("victory-modal").style.display = "block";
 }
