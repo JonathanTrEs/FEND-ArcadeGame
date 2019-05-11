@@ -45,19 +45,30 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(sprite = 'images/player-1.png') {
+var Player = function(spriteArray) {
     this.x = 200;
     this.y = 500;
     this.score = 0;
     this.bestScore = 0;
     this.allowMove = true;
     this.road = [50, 150, 220, 300, 400, 500];
-    this.sprite = sprite;
+    this.sprite = spriteArray[0];
+    this.spriteArray = spriteArray;
+    this.updateSprite = true;
+    this.spriteIndex = 0;
     this.heartSprite = "images/heart.svg";
     this.lifes = 3;
 };
 
 Player.prototype.update = function(dt) {
+    if(this.updateSprite){
+        this.spriteIndex++;
+        if(this.spriteIndex >= this.spriteArray.length)
+            this.spriteIndex = 0;
+        this.sprite = this.spriteArray[this.spriteIndex];
+        this.updateSprite = false;
+    } else
+        this.updateSprite = true;
     this.handleCollision();
 };
 
@@ -340,7 +351,26 @@ for(arrow of arrowElements){
 let playersElements = document.getElementsByClassName("player");
 for(item of playersElements){
     item.addEventListener('click', function(e){
-        player = new Player(this.getAttribute("src"));
+        let playerNumber = this.getAttribute("data-index");
+        let playerSprites = ['images/player-'+playerNumber+'/player-00.png',
+                        'images/player-'+playerNumber+'/player-01.png',
+                        'images/player-'+playerNumber+'/player-02.png',
+                        'images/player-'+playerNumber+'/player-03.png',
+                        'images/player-'+playerNumber+'/player-04.png',
+                        'images/player-'+playerNumber+'/player-05.png',
+                        'images/player-'+playerNumber+'/player-06.png',
+                        'images/player-'+playerNumber+'/player-07.png',
+                        'images/player-'+playerNumber+'/player-08.png',
+                        'images/player-'+playerNumber+'/player-09.png',
+                        'images/player-'+playerNumber+'/player-10.png',
+                        'images/player-'+playerNumber+'/player-11.png',
+                        'images/player-'+playerNumber+'/player-12.png',
+                        'images/player-'+playerNumber+'/player-13.png',
+                        'images/player-'+playerNumber+'/player-14.png',
+                        'images/player-'+playerNumber+'/player-15.png',
+                        'images/player-'+playerNumber+'/player-16.png',
+                        'images/player-'+playerNumber+'/player-17.png'];
+        player = new Player(playerSprites);
         createEnemies();
         createRocks();
         createCollectible();
