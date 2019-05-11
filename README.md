@@ -1,20 +1,35 @@
-# Classic Arcade Game Clone Project
+# Arcade Game Project | Runaway
 
 ## Table of Contents
 
-- [Instructions](#instructions)
 - [Contributing](#contributing)
-
-## Instructions
-
-Use this [rubric](https://review.udacity.com/#!/rubrics/15/view) for self-checking your submission.
-
-Make sure the functions you write are **object-oriented** - either class functions (like `Player` and `Enemy`) or class prototype functions such as `Enemy.prototype.checkCollisions`. Also make sure that the keyword `this` is used appropriately within your class and class prototype functions to refer to the object the function is called upon.
-
-Your **README.md** file should be updated with instructions on both how to 1. Run and 2. Play your arcade game.
-
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+- [How to](#Howto)
+- [Author](#Author)
+- [Resources](#Resources)
 
 ## Contributing
 
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
+This code was implemented usign the starter code for _all_ Udacity students provided _by Udacity_.
+
+The starter code can be found in [GitHub | Udacity](https://github.com/udacity/frontend-nanodegree-arcade-game)
+
+## Howto
+
+- Download the project and open `index.html` with you favourite browser.
+- OR Navigate to my [GH Pages](https://jonathantres.github.io/FEND-ArcadeGame/)
+
+## Author 
+
+_Jonathan Trujillo Estevez_
+
+## Resources
+
+- Font used_Pixeled_ from [dafont.com](https://www.dafont.com/es/pixeled.font)
+- Icon set from [IconFinder _by roundicons.com_](https://www.iconfinder.com/iconsets/game-of-thrones-4)
+- Icon set from [IconFinder _by Nick Roach_](https://www.iconfinder.com/iconsets/circle-icons-1)
+- Heart icon from[IconFinder _by Pixelbuddha_](https://www.iconfinder.com/iconsets/ballicons-2-free)
+- Background from [Trianglify.io](https://trianglify.io/)
+- Game assets from [Craftpix.net](https://craftpix.net/)
+	- [Fallen Angels](https://craftpix.net/freebies/free-fallen-angel-chibi-2d-game-sprites/)
+	- [Golems](https://craftpix.net/freebies/free-golems-chibi-2d-game-sprites/)
+- Vanilla JS Timer from [Codepen](https://codepen.io/mythicalpizza/pen/WvdeJG)
