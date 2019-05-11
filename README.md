@@ -27,7 +27,7 @@ _Jonathan Trujillo Estevez_
 - Font used _Pixeled_ from [dafont.com](https://www.dafont.com/es/pixeled.font)
 - Icon set from [IconFinder _by roundicons.com_](https://www.iconfinder.com/iconsets/game-of-thrones-4)
 - Icon set from [IconFinder _by Nick Roach_](https://www.iconfinder.com/iconsets/circle-icons-1)
-- Heart icon from[IconFinder _by Pixelbuddha_](https://www.iconfinder.com/iconsets/ballicons-2-free)
+- Heart icon from [IconFinder _by Pixelbuddha_](https://www.iconfinder.com/iconsets/ballicons-2-free)
 - Background from [Trianglify.io](https://trianglify.io/)
 - Game assets from [Craftpix.net](https://craftpix.net/)
 	- [Fallen Angels](https://craftpix.net/freebies/free-fallen-angel-chibi-2d-game-sprites/)
