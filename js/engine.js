@@ -93,7 +93,8 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        if(player != null)
+            player.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -153,11 +154,13 @@ var Engine = (function(global) {
         allRocks.forEach(function(rock) {
             rock.render();
         });
-        collectible.render();
+        if(collectible != null)
+            collectible.render();
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-        player.render();
+        if(player != null)
+            player.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -179,7 +182,9 @@ var Engine = (function(global) {
         'images/collectible.svg',
         'images/fire-golem.png',
         'images/ice-golem.png',
-        'images/player.png',
+        'images/player-1.png',
+        'images/player-2.png',
+        'images/player-3.png',
         'images/rock.png'
     ]);
     Resources.onReady(init);

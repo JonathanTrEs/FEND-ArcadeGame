@@ -1,3 +1,9 @@
+let collectible;
+let timer;
+let allRocks = [];
+let allEnemies = [];
+let player;
+
 // Enemies our player must avoid
 var Enemy = function(y = 150, speed = 400, sprite = 'images/ice-golem.png') {
     this.x = -200;
@@ -27,14 +33,14 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function() {
+var Player = function(sprite = 'images/player-1.png') {
     this.x = 200;
     this.y = 500;
     this.score = 0;
     this.bestScore = 0;
     this.allowMove = true;
     this.road = [50, 150, 220, 300, 400, 500];
-    this.sprite = 'images/player.png';
+    this.sprite = sprite;
 };
 
 Player.prototype.update = function(dt) {
@@ -59,7 +65,7 @@ Player.prototype.handleCollision = function(key) {
             startTimer();
         }
     }
-    if(collectible.y === this.y && collectible.x === this.x){
+    if(collectible != null && collectible.y === this.y && collectible.x === this.x){
         if(collectible.allowCollect){
             collectible.allowCollect = false;
             this.score += collectible.value;
@@ -180,8 +186,8 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
-    player.handleInput(allowedKeys[e.keyCode]);
+    if(player != null)
+        player.handleInput(allowedKeys[e.keyCode]);
 });
 
 document.getElementById("play-again").addEventListener('click', function(e){
@@ -245,13 +251,53 @@ function createCollectible(delay = 0){
     }, delay);
 }
 
-let collectible;
-let timer;
-let allRocks = [];
-let allEnemies = [];
-let player = new Player();
+let arrowElements = document.getElementsByClassName("arrow");
+for(arrow of arrowElements){
+    arrow.addEventListener('click', function(e){
+        let playersArray = [...document.getElementsByClassName("player")];
+        let index = -1;
+        let i = 0;
+        let exit = false;
+        if(this.getAttribute("id") == "right-arrow"){
+            while(!exit && i < playersArray.length){
+                if(playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0){
+                    playersArray[i].style.display = "none";
+                    exit = true;
+                    index = i+1;
+                    if(index == playersArray.length)
+                        index = 0;
+                }
+                i++
+            }
+            if(index != -1){
+                playersArray[index].style.display = "block";
+            }
+        } else if (this.getAttribute("id") == "left-arrow"){
+            while(!exit && i < playersArray.length){
+                if(playersArray[i].offsetWidth > 0 && playersArray[i].offsetHeight > 0){
+                    playersArray[i].style.display = "none";
+                    exit = true;
+                    index = i-1;
+                    if(index == -1)
+                        index = playersArray.length-1;
+                }
+                i++
+            }
+            if(index != -1){
+                playersArray[index].style.display = "block";
+            }
+        }
+    });
+}
 
-createEnemies();
-createRocks();
-createCollectible();
-startTimer();
+let playersElements = document.getElementsByClassName("player");
+for(item of playersElements){
+    item.addEventListener('click', function(e){
+        player = new Player(this.getAttribute("src"));
+        createEnemies();
+        createRocks();
+        createCollectible();
+        document.getElementById("player-selection").style.display = "none";
+        startTimer();
+    });
+}

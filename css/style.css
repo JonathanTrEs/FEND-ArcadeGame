@@ -35,7 +35,8 @@ button:focus {
     outline: none;
 }
 
-.modal {
+.modal,
+.player-selection {
     width: 505px;
     height: 3.5em;
     background-color: #ff9400;;
@@ -57,7 +58,8 @@ button:focus {
     justify-content: center;
 }	
 
-.modal-body {
+.modal-body,
+.player-selection-body {
 	font-family: "Pixeled";
 	color: white;
     font-size: 1.8em;
@@ -67,14 +69,64 @@ button:focus {
 .icon-svg {
     display: block;
     width: 9%;
-}
-
-.replay {
-    background: url('../images/icons/replay.svg') no-repeat center center;
     background-size: contain;
     margin-top: 1.5%;
 }
 
+.replay {
+    background: url('../images/icons/replay.svg') no-repeat center center;
+}
+
 #victory-modal {
     display: none;
+}
+
+.player-selection-body {
+    font-size: 1em;
+    margin-top: 1.2em;
+    display: flex;
+    justify-content: center;
+}
+
+.left-arrow {
+    background: url('../images/icons/left-arrow.svg') no-repeat center center;
+}
+
+.right-arrow {
+    background: url('../images/icons/right-arrow.svg') no-repeat center center;
+}
+
+.selection {
+    display: flex;
+    justify-content: center;
+    height: 2em;
+    margin-top: 3.5em;
+}
+
+.player-container {
+    width: 100%;
+    margin-top: -3%;
+}
+
+.characters {
+    display: flex;
+    align-items: center;
+}
+
+.characters img {
+    width: 12em;
+    height: 12em;
+}
+
+.characters img[data-index="2"],
+.characters img[data-index="3"] {
+    display: none;
+}
+
+.characters button {
+    background: none;
+}
+
+.player-selection {
+    height: 13em;
 }
